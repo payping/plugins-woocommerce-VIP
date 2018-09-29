@@ -4,8 +4,8 @@
 * Plugin URI: https://payping.ir/
 * Description: . 
 * Version: 1.3
-* Author: Sadegh Davtalab
-* Author URI: ossolutions.ir
+* Author: Pooria Monfared
+* Author URI: payping.ir
 * License: MIT
 */
 require_once('includes/payping_api.php');
