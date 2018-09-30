@@ -56,7 +56,7 @@
 به این بخش وارد شده و در کادر (8) توکن دریافتی از سایت پی پینگ را وارد و سپس دکمه ذخیره (9) را بزنید
 </p>
 <p dir="rtl">
-<img width="70%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/sync-plugin.png" />
+<img width="60%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/sync-plugin.png" />
 </p>
 <p dir="rtl">
 اگر در فروشگاه شما کالاهایی از قبل تعریف شده است و میخواهید به بخش آیتم های مالی پی پینگ برای دریافت گزارشات فروش اضافه شود روی «ارسال اطلاعات کالاها به پی پینگ» (10) بفشارید.
