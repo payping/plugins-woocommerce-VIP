@@ -46,7 +46,7 @@
 <h4 dir="rtl">دریافت توکن:</h4>
 <p dir="rtl">
 وارد سایت پی پینگ شده و به حساب کاربری خود وارد شوید سپس 
- <a href="https://oauth.payping.io/Client/CreateToken">«اینجا کلیک»</a>
+ <a href="https://oauth.payping.ir/Client/CreateToken">«اینجا کلیک»</a>
  کنید و فرم درخواست توکن را تکمیل و جهت تایید با
  <a href="https://payping.ir">«پشتیبانی آنلاین سایت»</a>
  تماس بگیرید. <b>برای استفاده از افزونه حتما باید توکن شما تایید شده باشد</b>
