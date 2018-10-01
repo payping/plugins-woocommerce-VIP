@@ -1,6 +1,7 @@
 <?php
 class PayPingAPI {
 	private $access_token = ''; //invoice
+	private $payping_send_invoice_to_payer=false;
 	private $debug = false;
 
 	function debug_log( $object=null, $label=null ){ 
@@ -8,11 +9,12 @@ class PayPingAPI {
 		$label = "Debug" . ($label ? " ($label): " : ': '); 
 		echo "<script>console.log(\"$label\", $message);</script>"; }
 	
-	public function PayPingAPI($access_token, $debug=false){
+	public function PayPingAPI($access_token,$payping_send_invoice_to_payer=false, $debug=false){
 		if($access_token==''){
 			echo 'token empty!';
 			exit();
 		}
+		$this->payping_send_invoice_to_payer = $payping_send_invoice_to_payer == 1 ? true : false;
 		$this->access_token = $access_token;
 		$this->debug = $debug;
 	}	
@@ -23,13 +25,17 @@ class PayPingAPI {
 		array_push($header, "Authorization: Bearer ".$this->access_token);
 		if($sendPluginDetails)
 		{
+			$ppsdw=$this->payping_send_invoice_to_payer == 1 ? "true" : "false";
+			array_push($header, "PluginSendInvoicePaidNotifyToPayer: ".$ppsdw);
 			array_push($header, "PluginVersion: 1.3");
 		    array_push($header, "PluginName: woocomerce");
 		    array_push($header, "WcOrderId: ".$order_id);
 		}
 		
-		
-		
+		debug_log($header,"api_post header:");
+
+		debug_log($url,"api_post url:");
+
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_POST,1);
@@ -112,7 +118,8 @@ class PayPingAPI {
 			
 		);
 		$result = $this->api_post("https://api.payping.ir/v1/invoice", $content,$order_id);
-		//var_dump($result);
+		// var_dump($result);
+		debug_log($result,"add_invoice result:");
 		return $result;
 	}
 	

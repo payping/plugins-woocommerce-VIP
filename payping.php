@@ -3,7 +3,7 @@
 * Plugin Name: PayPing
 * Plugin URI: https://payping.ir/
 * Description: . 
-* Version: 1.3
+* Version: 1.0.1
 * Author: Pooria Monfared
 * Author URI: payping.ir
 * License: MIT
@@ -113,6 +113,7 @@ function Load_PayPing_Gateway() {
 
                 $payping_options = get_option( 'payping_options' );
                 $this->payping_access_token = $payping_options['payping_access_token'];
+                $this->payping_send_invoice_to_payer = $payping_options['payping_send_invoice_to_payer'];
         
                 $this->success_massage = $this->settings['success_massage'];
                 $this->failed_massage = $this->settings['failed_massage'];
@@ -231,9 +232,10 @@ function Load_PayPing_Gateway() {
         $Amount = apply_filters('woocommerce_order_amount_total_PayPing_gateway', $Amount, $currency);
         $shipping = $this->Get_Toman($order->get_shipping_total(), $currency);
         $access_token = $this->payping_access_token;
+        $payping_send_invoice_to_payer = $this->payping_send_invoice_to_payer;
         $CallbackUrl = add_query_arg('wc_order', $order_id, WC()->api_request_url('WC_PayPing'));
         $payping_api_error =false;
-        $payping_api = new PayPingAPI($access_token);
+        $payping_api = new PayPingAPI($access_token,$payping_send_invoice_to_payer);
 
         $invoiceItems = array();
         $order_items = $order->get_items();
@@ -366,7 +368,7 @@ function Load_PayPing_Gateway() {
                 $Message = $ex->getMessage();
                 $Fault = '';
                 }
-        }
+               }
                
                 $Description = 'شماره سفارش : ' . $order->get_order_number() . ' | شماره فاکتور: '.$res['invoices'][0]['code'];
               
@@ -451,7 +453,7 @@ function Load_PayPing_Gateway() {
             debug_log($Amount,"SendVerifyPayment before amount:");
             if ($order->status != 'completed' and $order->status != 'processing') {  
   
-                $payping_api = new PayPingAPI($this->payping_access_token);
+                $payping_api = new PayPingAPI($this->payping_access_token,$this->payping_send_invoice_to_payer);
                 debug_log($refid,"SendVerifyPayment before refid:");
                 debug_log($invoicecode,"SendVerifyPayment before order_id:");
                 debug_log($order_id,"SendVerifyPayment before invoicecode:");
@@ -547,6 +549,20 @@ function payping_field_cb( $args ) {
     echo '<input type="text" name="payping_options['.esc_attr( $args['label_for'] ).']" value="'.$options[ $args['label_for'] ].'">';
 }
 
+function payping_checkbox_cb( $args ) {
+    $options = get_option( 'payping_options' );
+    echo '<input type="checkbox" id="checkbox_'.esc_attr( $args['label_for'] ).'" name="payping_options['.esc_attr( $args['label_for'] ).']" value="1"' . checked( 1, $options[ $args['label_for'] ], false ) . '/><label for="checkbox_'.esc_attr( $args['label_for'] ).'">ارسال اطلاع رسانی فاکتور پس از پرداخت موفق به پرداخت کننده</label>';
+}
+
+function payping_checkbox_cbc( $args ) {
+    $options = get_option( 'payping_options' );
+
+    $html = '<input type="checkbox" id="checkbox_'.esc_attr( $args['label_for'] ).'" name="payping_options['.esc_attr( $args['label_for'] ).']" value="1"' . checked( 1, $options['label_for'], false ) . '/>';
+    $html .= '<label for="checkbox_'.esc_attr( $args['label_for'] ).'">ارسال اطلاع رسانی فاکتور پس از پرداخت موفق به پرداخت کننده</label>';
+
+    echo $html;
+}
+
 function payping_register_settings() {
     register_setting( 'payping', 'payping_options' );
     add_settings_section(
@@ -565,7 +581,19 @@ function payping_register_settings() {
              'wporg_custom_data' => 'custom',
          ]
      );
+     add_settings_field(
+        'payping_send_invoice_to_payer', '',
+        'payping_checkbox_cb',
+        'payping',
+        'payping_section',
+         [
+             'label_for' => 'payping_send_invoice_to_payer',
+             'class' => 'wporg_row',
+             'wporg_custom_data' => 'custom',
+         ]
+    );
 }
+
 
 function payping_add_new_item($post, $amount){
     //Create post
@@ -590,7 +618,8 @@ function payping_settings_page() {
     if(isset($_POST['fromPayping']) or isset($_POST['toPayping'])){
         $payping_options = get_option( 'payping_options' );
         $access_token = $payping_options['payping_access_token'];
-        $payping_api = new PayPingAPI($access_token);
+        $payping_send_invoice_to_payer = $payping_options['payping_send_invoice_to_payer'];
+        $payping_api = new PayPingAPI($access_token,$payping_send_invoice_to_payer);
     
     
         if(isset($_POST['toPayping'])){
