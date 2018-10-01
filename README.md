@@ -29,7 +29,7 @@
  دریافت کنید 
 </p>
 <p dir="rtl">
-<img width="80%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/download-plugin.png" />
+<a href="https://github.com/payping/plugins-woocommerce/releases" title="دانلود اخرین نسخه افزونه"><img width="70%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/download-plugin.png" /></a>
 </p>
 <p dir="rtl">
 پس از دریافت فایل افزونه ، از طریق بارگذاری در صفحه اقدام به نصب (5) کنید 
