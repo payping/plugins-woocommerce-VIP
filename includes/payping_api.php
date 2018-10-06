@@ -9,7 +9,7 @@ class PayPingAPI {
 		$label = "Debug" . ($label ? " ($label): " : ': '); 
 		echo "<script>console.log(\"$label\", $message);</script>"; }
 	
-	public function PayPingAPI($access_token,$payping_send_invoice_to_payer=false, $debug=true){
+	public function PayPingAPI($access_token,$payping_send_invoice_to_payer=false, $debug=false){
 		if($access_token==''){
 			echo 'token empty!';
 			exit();
