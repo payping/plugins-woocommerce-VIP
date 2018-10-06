@@ -1,7 +1,7 @@
 <div dir="rtl">
 <h2 dir="rtl">افزونه پی پینگ ویژه ووکامرس </h2>
 <p dir="rtl">
-افزونه هماهنگ شده با فروشگاه ساز ووکامرس جهت ارتباط با سایت 
+افزونه هماهنگ شده با فروشگاه ساز ووکامرس فارسی نسخه «» جهت ارتباط با سایت 
 <a href="https://payping.ir">«پی پینگ»</a>
 می باشد.
 </p>
@@ -11,8 +11,18 @@
  استفاده نمایید
 </p>
 <h3 dir="rtl">راهنمای نصب :</h3>
+ <p dir="rtl">
+ پیش نیاز:
+بروزرسانی «WordPress»،«ووکامرس» و «ووکامرس فارسی» به جدیدترین نگارش 
+ </p>
+ <p dir="rtl">
+<img width="50%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/wordpress-update.png"/>
+</p>
+ <p dir="rtl">
+<img width="95%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/woocomerce-update.png"/>
+</p>
 <p dir="rtl">
-ابتدا از نصب نبودن پلاگین اطمینان حاصل کنید، از پنل مدیریتی وردپرس ، قسمت «افزونه ها» طبق تصویر زیر اگر گزینه ای با عنوان «Payping» وجود داشت ابتدا غیر فعال سپس پاک کنید
+ ابتدا از نصب <b>نبودن</b> افزونه «Payping» اطمینان حاصل کنید، برای این کار از پنل مدیریتی وردپرس ، قسمت «افزونه ها» طبق تصویر زیر اگر گزینه ای با عنوان «Payping» وجود داشت ابتدا غیر فعال سپس پاک کنید
 </p>
 <p dir="rtl">
 <img width="80%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/unistall-plugin.png"/>
@@ -41,7 +51,7 @@
 پس از نصب ، نیاز به فعال سازی افزونه (6) می باشد
 </p>
 <p dir="rtl">
-<img width="80%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/active-plugin.png" />
+<img width="70%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/active-plugin.png" />
 </p>
 <h4 dir="rtl">دریافت توکن:</h4>
 <p dir="rtl">
