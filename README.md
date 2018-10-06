@@ -16,7 +16,7 @@
 بروزرسانی «WordPress»،«ووکامرس» و «ووکامرس فارسی» به جدیدترین نگارش 
  </p>
  <p dir="rtl">
-<img width="60%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/wordpress-update.png"/>
+<img width="50%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/wordpress-update.png"/>
 </p>
  <p dir="rtl">
 <img width="95%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/woocomerce-update.png"/>
@@ -51,7 +51,7 @@
 پس از نصب ، نیاز به فعال سازی افزونه (6) می باشد
 </p>
 <p dir="rtl">
-<img width="80%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/active-plugin.png" />
+<img width="70%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/active-plugin.png" />
 </p>
 <h4 dir="rtl">دریافت توکن:</h4>
 <p dir="rtl">
