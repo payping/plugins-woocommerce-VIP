@@ -16,10 +16,10 @@
 بروزرسانی «WordPress»،«ووکامرس» و «ووکامرس فارسی» به جدیدترین نگارش 
  </p>
  <p dir="rtl">
-<img width="80%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/wordpress-update.png"/>
+<img width="60%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/wordpress-update.png"/>
 </p>
  <p dir="rtl">
-<img width="80%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/woocomerce-update.png"/>
+<img width="95%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/woocomerce-update.png"/>
 </p>
 <p dir="rtl">
  ابتدا از نصب <b>نبودن</b> افزونه «Payping» اطمینان حاصل کنید، برای این کار از پنل مدیریتی وردپرس ، قسمت «افزونه ها» طبق تصویر زیر اگر گزینه ای با عنوان «Payping» وجود داشت ابتدا غیر فعال سپس پاک کنید
