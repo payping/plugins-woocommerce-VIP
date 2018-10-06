@@ -2,14 +2,14 @@
 class PayPingAPI {
 	private $access_token = ''; //invoice
 	private $payping_send_invoice_to_payer=false;
-	private $debug = false;
+	private $debug = true;
 
 	function debug_log( $object=null, $label=null ){ 
 		$message = json_encode($object, JSON_PRETTY_PRINT);
 		$label = "Debug" . ($label ? " ($label): " : ': '); 
 		echo "<script>console.log(\"$label\", $message);</script>"; }
 	
-	public function PayPingAPI($access_token,$payping_send_invoice_to_payer=false, $debug=false){
+	public function PayPingAPI($access_token,$payping_send_invoice_to_payer=false, $debug=true){
 		if($access_token==''){
 			echo 'token empty!';
 			exit();
@@ -45,9 +45,10 @@ class PayPingAPI {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		$output = curl_exec($ch);
 		curl_close($ch);
-		// if($this->debug)
-		// 	echo '<pre>'.$output.'</pre>';
-		debug_log($output,"api_post output:");
+
+		if($this->debug)
+			echo '<pre>'.$output.'</pre>';
+		
 		return json_decode($output, true);
 	}
 	
@@ -70,8 +71,10 @@ class PayPingAPI {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		$output = curl_exec($ch);
 		curl_close($ch);
-		// if($this->debug)
-		// 	echo '<pre>'.$output.'</pre>'; 
+		if($this->debug)
+			echo '<pre>'.$output.'</pre>'; 
+
+		
 		return json_decode($output, true);
 	}
 	
@@ -81,8 +84,11 @@ class PayPingAPI {
 			"InvoiceCode" => $invoicecode,
 			"RefId" => "$RefId"
 		);
-		$res = $this->api_post("https://api.payping.ir/v1/invoice/confirmpaymentbyplugin", $content, $order_id);
-		return $res;
+		$result = $this->api_post("https://api.payping.ir/v1/invoice/confirmpaymentbyplugin", $content, $order_id);
+		if($this->debug)
+			echo '<pre>'.$result.'</pre>'; 
+
+		return $result;
 	}
 
 	public function add_invoice($order_id, $invoiceDate, $invoiceItems, $customerCode, $shipping, $return_url, $otherDiscountAmount, $otherDiscountPercent){
@@ -118,8 +124,9 @@ class PayPingAPI {
 			
 		);
 		$result = $this->api_post("https://api.payping.ir/v1/invoice", $content,$order_id);
-		// var_dump($result);
-		debug_log($result,"add_invoice result:");
+		if($this->debug)
+			echo '<pre>'.$result.'</pre>';
+		
 		return $result;
 	}
 	
@@ -135,6 +142,9 @@ class PayPingAPI {
 			"defineAmountByUser" => false
 		);
 		$result = $this->api_post("https://api.payping.ir/v1/product", $content,null,false);
+        if($this->debug)
+			echo '<pre>'.$result.'</pre>';
+
 		if(isset($result['code'])){
 			return $result['code'];
 		}
@@ -151,6 +161,9 @@ class PayPingAPI {
 			$url .= '/list';
 		
 		$result = $this->api_get($url, 2,false);
+		if($this->debug)
+			echo '<pre>'.$result.'</pre>'; 
+
 		return $result;
 	}
 	
@@ -172,6 +185,9 @@ class PayPingAPI {
 			//"nationalId" => ""
 		);
 		$result = $this->api_post("https://api.payping.ir/v1/addressbook", $content);
+		if($this->debug)
+			echo '<pre>'.$result.'</pre>'; 
+
 		if(isset($result['code'])){
 			return $result['code'];
 		}

@@ -361,7 +361,9 @@ function Load_PayPing_Gateway() {
                                 $CallbackUrl,
                                 $otherDiscountAmount,
                                 $otherDiscountPercent
-                                );    
+                                ); 
+                                
+                    echo '<pre> addInvoice result:'.$res.'</pre>';   
                     $paymentCode = $res['invoices'][0]['paymentCode'];            
                 } 
                 catch (Exception $ex) {
@@ -396,8 +398,21 @@ function Load_PayPing_Gateway() {
                 exit;
             } 
             else {
-                $Message = ' خطا در دریافت کد پرداخت، مجددا سعی نمایید ';
-                $Fault = '';
+                echo '<pre>strpos:'.$res.'</pre>';
+                if (strpos($res, '401') !== false ) {
+                    echo 'true';
+                    $Message = ' توکن اختصاصی فروشگاه در سایت پی پینگ تایید نشده است ';
+                }
+                else if (strpos((string)$res, '401') !== false ) {
+                    echo 'true2';
+                    $Message = ' توکن اختصاصی فروشگاه در سایت پی پینگ تایید نشده است ';
+                }
+                else
+                {
+                    $Message = ' خطا در دریافت کد پرداخت، مجددا سعی نمایید ';
+                    $Fault = '';
+                }
+                
             }
                 } 
                 catch (Exception $ex) {
