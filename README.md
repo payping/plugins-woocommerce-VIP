@@ -16,22 +16,22 @@
 بروزرسانی «WordPress»،«ووکامرس» و «ووکامرس فارسی» به جدیدترین نگارش 
  </p>
  <p dir="rtl">
-<img width="50%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/wordpress-update.png"/>
+<img width="50%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce-VIP/master/help/wordpress-update.png"/>
 </p>
  <p dir="rtl">
-<img width="95%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/woocomerce-update.png"/>
+<img width="95%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce-VIP/master/help/woocomerce-update.png"/>
 </p>
 <p dir="rtl">
  ابتدا از نصب <b>نبودن</b> افزونه «Payping» اطمینان حاصل کنید، برای این کار از پنل مدیریتی وردپرس ، قسمت «افزونه ها» طبق تصویر زیر اگر گزینه ای با عنوان «Payping» وجود داشت ابتدا غیر فعال سپس پاک کنید
 </p>
 <p dir="rtl">
-<img width="80%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/unistall-plugin.png"/>
+<img width="80%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce-VIP/master/help/unistall-plugin.png"/>
 </p>
 <p dir="rtl">
 در گام بعدی از منو مدیریتی ، افزونه ها ، زیر گزینه افزودن (3) و در پنل سمت چپ دکمه بارگذاری افزونه (4) را بزنید
 </p>
 <p dir="rtl">
-<img width="80%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/add-plugin.png"/>
+<img width="80%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce-VIP/master/help/add-plugin.png"/>
 </p>
 <p dir="rtl">
 سپس اخرین نسخه از افزونه پی پینگ ویژه ووکامرس را 
@@ -39,19 +39,19 @@
  دریافت کنید 
 </p>
 <p dir="rtl">
-<a href="https://github.com/payping/plugins-woocommerce/releases" title="دانلود اخرین نسخه افزونه"><img width="70%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/download-plugin.png" /></a>
+<a href="https://github.com/payping/plugins-woocommerce/releases" title="دانلود اخرین نسخه افزونه"><img width="70%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce-VIP/master/help/download-plugin.png" /></a>
 </p>
 <p dir="rtl">
 پس از دریافت فایل افزونه ، از طریق بارگذاری در صفحه اقدام به نصب (5) کنید 
 </p>
 <p dir="rtl">
-<img width="80%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/browse-plugin.png"/>
+<img width="80%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce-VIP/master/help/browse-plugin.png"/>
 </p>
 <p dir="rtl">
 پس از نصب ، نیاز به فعال سازی افزونه (6) می باشد
 </p>
 <p dir="rtl">
-<img width="70%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/active-plugin.png" />
+<img width="70%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce-VIP/master/help/active-plugin.png" />
 </p>
 <h4 dir="rtl">دریافت توکن:</h4>
 <p dir="rtl">
@@ -66,7 +66,7 @@
 به این بخش وارد شده و در کادر (8) توکن دریافتی از سایت پی پینگ را وارد کنید، اگر می خواهید که فاکتور صادر شده پس از پرداخت موفقیت آمیز به شکل ایمیل و پیامک به شخص پرداخت کننده ارسال شود تیک گزینه(9) را فعال و سپس دکمه ذخیره (10) را بزنید
 </p>
 <p dir="rtl">
-<img width="60%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce/master/help/sync-plugin.png" />
+<img width="60%" src="https://raw.githubusercontent.com/payping/plugins-woocommerce-VIP/master/help/sync-plugin.png" />
 </p>
 <p dir="rtl">
 اگر در فروشگاه شما کالاهایی از قبل تعریف شده است و میخواهید به بخش آیتم های مالی پی پینگ برای دریافت گزارشات فروش اضافه شود روی «ارسال اطلاعات کالاها به پی پینگ» (11) بفشارید.
