@@ -386,7 +386,7 @@ $body_customer = array (
   'phone' => $Mobile,
   'firstName' => $order->billing_first_name,
   'lastName' => $order->billing_last_name,
-  'businessName' => $Description,
+//   'businessName' => $Description,
   'zipCode' => $order->billing_postcode,
   'state' => $state,
   'city' => $order->billing_city,
@@ -413,6 +413,7 @@ $customer_arrgs = array(
     );
     
 $customer = wp_remote_post( $url_customer, $customer_arrgs);
+$header = wp_remote_retrieve_headers($customer);
 $customerCode = null;   
 if ( is_wp_error( $customer ) ) {
    $error_message = $customer->get_error_message();
@@ -430,9 +431,11 @@ if ( $code_costumer === 200 && $messages === 'OK') {
 }elseif( $code_costumer === 400) {
     $message = wp_remote_retrieve_response_message( $customer );
     echo 'خطای 400: '.$message;
+    echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
 }else{
     $message = wp_remote_retrieve_response_message( $customer );
     echo 'خطای ارسال درخواست: '.$message;
+    echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
 }
    
 }
@@ -471,15 +474,16 @@ $body_post = array (
                          'cookies' => array()
                         );
 $response = wp_remote_post('https://api.payping.ir/v1/invoice', $args);
-                
+//        var_dump($response);        
 if ( is_wp_error($response) ) {
   echo "خطای افزونه";
 }else{
+    $header = wp_remote_retrieve_headers($response);
     $body = json_decode(wp_remote_retrieve_body($response), true);
     $invoices = $body['invoices']['0'];
     $invoiceCode = $invoices['code'];
     $paymentCode = $invoices['paymentCode'];
-    
+
     $httpcode = wp_remote_retrieve_response_code( $response );
     if( $httpcode === 200 ){
         if( isset($paymentCode) && $paymentCode !== '' ){
@@ -493,9 +497,11 @@ if ( is_wp_error($response) ) {
     }elseif( $httpcode === 400 ){
         $Message = $httpcode;
         echo 'خطای 400:'.$httpcode;
+        echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
     }else{
         $Message = $httpcode;
         echo 'خطای کد:'.$httpcode;
+        echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
     }
 }
 
@@ -517,8 +523,6 @@ if ( is_wp_error($response) ) {
 
 			public function Return_from_payping_Gateway()
 			{
-
-
 				global $woocommerce;
 
 
@@ -565,7 +569,7 @@ if ( is_wp_error($response) ) {
                         );
 
                     $response = wp_remote_post('https://api.payping.ir/v1/invoice/confirmpaymentbyplugin', $args);
-
+                    $header = wp_remote_retrieve_headers($response);
                     if ( is_wp_error($response) ) {
                         $Status = 'failed';
 				        $Fault = 'Curl Error.';
@@ -582,19 +586,21 @@ if ( is_wp_error($response) ) {
 							} else {
                                 $Status = 'failed';
 								$Transaction_ID = $_GET['refid'];
-								$Message = 'متاسفانه سامانه قادر به دریافت کد پیگیری نمی باشد! نتیجه درخواست : ' .wp_remote_retrieve_body( $response ).'<br /> شماره خطا: ';
+								$Message = 'متاسفانه سامانه قادر به دریافت کد پیگیری نمی باشد! نتیجه درخواست : ' .wp_remote_retrieve_body( $response ).'<br /> شماره خطا: '.$header;
 								$Fault = $code;
 							}
 						} elseif ( $code == 400) {
                             $Status = 'failed';
 				            $Transaction_ID = $_GET['refid'];
-							$Message = wp_remote_retrieve_body( $response ).'<br /> شماره خطا: '.$XPP_ID;
+							$Message = wp_remote_retrieve_body( $response );
 							$Fault = $code;
+                            echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
 						} else {
                             $Status = 'failed';
 				            $Transaction_ID = $_GET['refid'];
-							$Message = wp_remote_retrieve_body( $response ).'<br /> شماره خطا: '.$XPP_ID;
+							$Message = wp_remote_retrieve_body( $response );
                             $Fault = $code;
+                            echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
 						}
 					}
 

@@ -34,14 +34,14 @@ $cat_args = array(
 'cookies' => array()
 );
 $response = wp_remote_get( $url, $cat_args );
-
+$header = wp_remote_retrieve_headers($response);
+$request_api = $header['x-paypingrequest-id'];
 if ( is_wp_error($response) ) {
 echo $Message = $response->get_error_message();
 }else{
 $code = wp_remote_retrieve_response_code( $response );
 if ( $code === 200) {
 $product_cat = json_decode( wp_remote_retrieve_body($response), true );
-   
 /* set counter variable */
 $up_count = 0;
 $ins_count = 0;
@@ -71,7 +71,7 @@ foreach( $product_cat as $category ){
       $up_count++;
   }
     }
-    
+
     /* show message for admin */
     if(isset($notif) && $notif == 1){
         echo '<div class="notice notice-success is-dismissible"><p>'.$ins_count.' دسته ایجاد و '.$up_count.' دسته بروز شد.</p></div>';
@@ -79,8 +79,10 @@ foreach( $product_cat as $category ){
     
 }elseif( $code == 400) {
     echo wp_remote_retrieve_response_message( $response );
+    echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
 }else{
     echo wp_remote_retrieve_response_message( $response );
+    echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
 }
 }
     
@@ -105,7 +107,7 @@ $product_args = array(
 'cookies' => array()
 );
 $response = wp_remote_get( $url, $product_args );
-
+$header = wp_remote_retrieve_headers($response);
 if ( is_wp_error($response) ) {
     echo $Message = $response->get_error_message();
 }else{
@@ -245,12 +247,13 @@ if ( $code === 200) {
     }
 
 }elseif( $code == 400) {
-echo wp_remote_retrieve_response_message( $response );
+    echo wp_remote_retrieve_response_message( $response );
+    echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
 }else{
-echo wp_remote_retrieve_response_message( $response );
+    echo wp_remote_retrieve_response_message( $response );
+    echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
 }
-}
-     
+}     
 }
         /* end function insert and update coupon code */
         
@@ -274,7 +277,7 @@ $coupon_args = array(
 );
     
 $response = wp_remote_get( $url, $coupon_args );
-
+$header = wp_remote_retrieve_headers($response);
 if ( is_wp_error($response) ) {
     echo $Message = $response->get_error_message();
 }else{
@@ -393,8 +396,10 @@ $ins_count = 0;
         
     }elseif( $code == 400) {
         echo wp_remote_retrieve_response_message( $response );
+        echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
     }else{
         echo wp_remote_retrieve_response_message( $response );
+        echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
     }
     }
 }
