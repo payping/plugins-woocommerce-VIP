@@ -414,6 +414,7 @@ $customer_arrgs = array(
     
 $customer = wp_remote_post( $url_customer, $customer_arrgs);
 $header = wp_remote_retrieve_headers($customer);
+$request_api = $header['x-paypingrequest-id'];               
 $customerCode = null;   
 if ( is_wp_error( $customer ) ) {
    $error_message = $customer->get_error_message();
@@ -473,12 +474,14 @@ $body_post = array (
 	                       	),
                          'cookies' => array()
                         );
-$response = wp_remote_post('https://api.payping.ir/v1/invoice', $args);
-//        var_dump($response);        
+$response = wp_remote_post('https://api.payping.ir/v1/invoice', $args); 
+if(WP_DEBUG === true){var_dump($response);}
+
+    $header = wp_remote_retrieve_headers($response);
+    $request_api = $header['x-paypingrequest-id'];        
 if ( is_wp_error($response) ) {
   echo "خطای افزونه";
 }else{
-    $header = wp_remote_retrieve_headers($response);
     $body = json_decode(wp_remote_retrieve_body($response), true);
     $invoices = $body['invoices']['0'];
     $invoiceCode = $invoices['code'];
@@ -569,7 +572,10 @@ if ( is_wp_error($response) ) {
                         );
 
                     $response = wp_remote_post('https://api.payping.ir/v1/invoice/confirmpaymentbyplugin', $args);
+                    if(WP_DEBUG === true){var_dump($response);}
+                        
                     $header = wp_remote_retrieve_headers($response);
+                    $request_api = $header['x-paypingrequest-id'];
                     if ( is_wp_error($response) ) {
                         $Status = 'failed';
 				        $Fault = 'Curl Error.';
@@ -586,7 +592,7 @@ if ( is_wp_error($response) ) {
 							} else {
                                 $Status = 'failed';
 								$Transaction_ID = $_GET['refid'];
-								$Message = 'متاسفانه سامانه قادر به دریافت کد پیگیری نمی باشد! نتیجه درخواست : ' .wp_remote_retrieve_body( $response ).'<br /> شماره خطا: '.$header;
+								$Message = 'متاسفانه سامانه قادر به دریافت کد پیگیری نمی باشد! نتیجه درخواست : ' .wp_remote_retrieve_body( $response ).'<br /> شماره خطا: '.$request_api;
 								$Fault = $code;
 							}
 						} elseif ( $code == 400) {
