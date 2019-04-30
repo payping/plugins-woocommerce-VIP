@@ -3,22 +3,45 @@ if (!defined('ABSPATH'))
 	exit;
 include_once("class-control-vip-payping.php");
 
-function Load_payping_Gateway()
+function wvpp_Load_payping_Gateway()
 {
 
 	if (class_exists('WC_Payment_Gateway') && !class_exists('WC_PayPing') && !function_exists('Woocommerce_Add_payping_Gateway')) {
-
-
+        
+        /* Show Debug In Console */
+        function WC_GPP_Debug_Log($Debug_Mode='no', $object=null, $label=null )
+        {
+            if($Debug_Mode === 'yes'){
+                $object = $object; 
+                $message = json_encode( $object, true);
+                $label = "Debug".($label ? " ($label): " : ': '); 
+                echo "<script>console.log(\"$label\", $message);</script>";  
+            }
+        }
+        
+        /* Set Urls API */
+        function WC_GPP_DebugURLs($Debug_Mode='no', $Debug_URL, $Method)
+        {
+            if($Debug_Mode === 'no'){
+                $url = 'https://api.payping.ir'.$Method;
+            }elseif($Debug_Mode === 'yes'){
+                $url = $Debug_URL.$Method;
+            }else{
+                $url = 'https://api.payping.ir'.$Method; 
+            }
+            return $url;
+        }
+        
+        /* PayPing Mrthod Gateway */
 		add_filter('woocommerce_payment_gateways', 'Woocommerce_Add_payping_Gateway');
-
 		function Woocommerce_Add_payping_Gateway($methods)
 		{
 			$methods[] = 'WC_PayPing';
 			return $methods;
 		}
-
+        
+        /* Currency PayPing */
 		add_filter('woocommerce_currencies', 'add_IR_currency_For_PayPing');
-
 		function add_IR_currency_For_PayPing($currencies)
 		{
 			$currencies['IRR'] = __('ریال', 'woocommerce');
@@ -26,9 +49,9 @@ function Load_payping_Gateway()
 
 			return $currencies;
 		}
-
+        
+        /* Currency Symbol Payping */
 		add_filter('woocommerce_currency_symbol', 'add_IR_currency_symbol_For_PayPing', 10, 2);
-
 		function add_IR_currency_symbol_For_PayPing($currency_symbol, $currency)
 		{
 			switch ($currency) {
@@ -51,7 +74,7 @@ function Load_payping_Gateway()
 				$this->id = 'WC_PayPing';
 				$this->method_title = __('پرداخت از طریق درگاه پی‌پینگ', 'woocommerce');
 				$this->method_description = __('تنظیمات درگاه پرداخت پی‌پینگ برای افزونه فروشگاه ساز ووکامرس', 'woocommerce');
-				$this->icon = apply_filters('WC_PayPing_logo', WP_PLUGIN_URL . "/" . plugin_basename(dirname(__FILE__)) . '/assets/images/logo.png');
+				$this->icon = apply_filters('WC_PayPing_logo', WP_PLUGIN_URL."/".plugin_basename(dirname(__FILE__)).'/assets/images/logo.png');
 				$this->has_fields = false;
 
 				$this->init_form_fields();
@@ -64,14 +87,17 @@ function Load_payping_Gateway()
 
 				$this->success_massage = $this->settings['success_massage'];
 				$this->failed_massage = $this->settings['failed_massage'];
+                
+                $this->Debug_Mode = $this->settings['Debug_Mode'];
+                $this->Debug_URL = $this->settings['Debug_URL'];
 
 				if (version_compare(WOOCOMMERCE_VERSION, '2.0.0', '>='))
-					add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
+					add_action('woocommerce_update_options_payment_gateways_'.$this->id, array($this, 'process_admin_options'));
 				else
 					add_action('woocommerce_update_options_payment_gateways', array($this, 'process_admin_options'));
 
-				add_action('woocommerce_receipt_' . $this->id . '', array($this, 'Send_to_payping_Gateway'));
-				add_action('woocommerce_api_' . strtolower(get_class($this)) . '', array($this, 'Return_from_payping_Gateway'));
+				add_action('woocommerce_receipt_'.$this->id.'', array($this, 'Send_to_payping_Gateway'));
+				add_action('woocommerce_api_'.strtolower(get_class($this)).'', array($this, 'Return_from_payping_Gateway'));
 
 			}
 
@@ -143,6 +169,26 @@ function Load_payping_Gateway()
 							'type' => 'textarea',
 							'description' => __('متن پیامی که میخواهید بعد از پرداخت ناموفق به کاربر نمایش دهید را وارد نمایید . همچنین می توانید از شورت کد {fault} برای نمایش دلیل خطای رخ داده استفاده نمایید .', 'woocommerce'),
 							'default' => __('پرداخت شما ناموفق بوده است . لطفا مجددا تلاش نمایید یا در صورت بروز اشکال با مدیر سایت تماس بگیرید .', 'woocommerce'),
+						),
+                        'Debug_Confing' => array(
+							'title' => __('تنظیمات اشکال زدایی <span style="font-size:12px;color:red;">این بخش برای توسعه دهندگان است.(در صورت نداشتن اطلاعات کافی آن را رها کنید).</span>', 'woocommerce'),
+							'type' => 'title',
+							'description' => '',
+						),
+                        'Debug_Mode' => array(
+							'title' => __('فعالسازی حالت اشکال زدایی<br/><span style="font-size:11px;color:red;">از فعالسازی این گزینه در حالت عادی خودداری نمایید.</span>', 'woocommerce'),
+							'type' => 'checkbox',
+                            'label' => __('حالت اشکال زدایی', 'woocommerce'),
+							'description' => __('برای فعالسازی حالت اشکال زدایی تیک بزنید.', 'woocommerce'),
+							'default' => 'no',
+							'desc_tip' => true
+						),
+                        'Debug_URL' => array(
+							'title' => __('آدرس جایگزین برای اتصال به وبسرویس', 'woocommerce'),
+							'type' => 'url',
+							'description' => __('آدرس جایگزین', 'woocommerce'),
+							'default' => 'https://api.payping.ir',
+							'desc_tip' => true
 						),
 					)
 				);
@@ -280,7 +326,7 @@ function Load_payping_Gateway()
 				else
 					$payerIdentity = $Email ;
  
-            $call_sync = new Control_Vip_Payping();
+            $call_sync = new WVPP_Control_Vip_Payping();
             
                        
 /* set customer */ 
@@ -380,7 +426,10 @@ switch ($state) {
         $state = 'زنجان ';
         break;
 }
-$url_customer = "https://api.payping.ir/v1/customer/CreateOrFind";   
+                
+/* Call Function Set Urls API */
+$url_customer = WC_GPP_DebugURLs($this->Debug_Mode, $this->Debug_URL, '/v1/customer/CreateOrFind'); 
+                
 $body_customer = array (
   'email' => $Email,
   'phone' => $Mobile,
@@ -413,8 +462,11 @@ $customer_arrgs = array(
     );
     
 $customer = wp_remote_post( $url_customer, $customer_arrgs);
+                
+/* Call Function Show Debug In Console */
+WC_GPP_Debug_Log($this->Debug_Mode, $customer, "Create Or Find Customer Result");  
+                
 $header = wp_remote_retrieve_headers($customer);
-$request_api = $header['x-paypingrequest-id'];               
 $customerCode = null;   
 if ( is_wp_error( $customer ) ) {
    $error_message = $customer->get_error_message();
@@ -474,11 +526,18 @@ $body_post = array (
 	                       	),
                          'cookies' => array()
                         );
-$response = wp_remote_post('https://api.payping.ir/v1/invoice', $args); 
-if(WP_DEBUG === true){var_dump($response);}
+                
 
-    $header = wp_remote_retrieve_headers($response);
-    $request_api = $header['x-paypingrequest-id'];        
+/* Call Function Set Urls API */
+$url_invoice = WC_GPP_DebugURLs($this->Debug_Mode, $this->Debug_URL, '/v1/invoice');
+                
+$response = wp_remote_post( $url_invoice, $args );
+
+/* Call Function Show Debug In Console */
+WC_GPP_Debug_Log($this->Debug_Mode, $response, "Invoice Result");
+                
+$header = wp_remote_retrieve_headers($response);
+$request_api = $header['x-paypingrequest-id'];      
 if ( is_wp_error($response) ) {
   echo "خطای افزونه";
 }else{
@@ -492,7 +551,7 @@ if ( is_wp_error($response) ) {
         if( isset($paymentCode) && $paymentCode !== '' ){
             /* save invoceCode in order */
             update_post_meta($order_id, 'invoceCode', $invoiceCode);
-            wp_redirect(sprintf('https://api.payping.ir/v1/pay/gotoipg/%s', $paymentCode));
+            wp_redirect(sprintf('%s/v1/pay/gotoipg/%s',$this->Debug_URL , $paymentCode));
         }else{
             $Message = 'کد پرداخت تنظیم نشده است';
             echo 'کد پرداخت تنظیم نشده است';
@@ -519,10 +578,9 @@ if ( is_wp_error($response) ) {
 					if ($Notice)
 						wc_add_notice($Notice, 'error');
 
-					do_action('WC_PayPing_Send_to_Gateway_Failed', $order_id, $Fault);
+					do_action('WC_PayPing_Send_to_Gateway_Failed', $order_id, $Fault='null');
 				}
 			}
-
 
 			public function Return_from_payping_Gateway()
 			{
@@ -530,7 +588,7 @@ if ( is_wp_error($response) ) {
 
 
 				if (isset($_GET['wc_order']))
-					$order_id = $_GET['wc_order'];
+					$order_id = sanitize_text_field( $_GET['wc_order'] );
 				else {
 					$order_id = $woocommerce->session->order_id_payping;
 					unset($woocommerce->session->order_id_payping);
@@ -570,12 +628,15 @@ if ( is_wp_error($response) ) {
 	                       	),
                          'cookies' => array()
                         );
-
-                    $response = wp_remote_post('https://api.payping.ir/v1/invoice/confirmpaymentbyplugin', $args);
-                    if(WP_DEBUG === true){var_dump($response);}
+                    /* Call Function Set Urls API */ 
+                    $url_confirm = WC_GPP_DebugURLs($this->Debug_Mode, $this->Debug_URL, '/v1/invoice/confirmpaymentbyplugin');
+                    $response = wp_remote_post($url_confirm, $args);
+                    
+                    /* Call Function Show Debug In Console */
+                    WC_GPP_Debug_Log($this->Debug_Mode, $response, "Confirm Result");
                         
-                    $header = wp_remote_retrieve_headers($response);
-                    $request_api = $header['x-paypingrequest-id'];
+					$header = wp_remote_retrieve_headers($response);
+					$request_api = $header['x-paypingrequest-id'];
                     if ( is_wp_error($response) ) {
                         $Status = 'failed';
 				        $Fault = 'Curl Error.';
@@ -586,24 +647,24 @@ if ( is_wp_error($response) ) {
                             
 							if (isset($_GET["refid"]) && $_GET['refid'] != '' && isset($_GET['clientrefid']) == $invoiceCode ) {
 								$Status = 'completed';
-								$Transaction_ID = $_GET["refid"];
+								$Transaction_ID = sanitize_text_field( $_GET["refid"] );
 								$Fault = '';
 								$Message = '';
 							} else {
                                 $Status = 'failed';
-								$Transaction_ID = $_GET['refid'];
-								$Message = 'متاسفانه سامانه قادر به دریافت کد پیگیری نمی باشد! نتیجه درخواست : ' .wp_remote_retrieve_body( $response ).'<br /> شماره خطا: '.$request_api;
+								$Transaction_ID = sanitize_text_field( $_GET["refid"] );
+								$Message = 'متاسفانه سامانه قادر به دریافت کد پیگیری نمی باشد! نتیجه درخواست : ' .wp_remote_retrieve_body( $response ).'<br /> شماره خطا: '.$header;
 								$Fault = $code;
 							}
 						} elseif ( $code == 400) {
                             $Status = 'failed';
-				            $Transaction_ID = $_GET['refid'];
+				            $Transaction_ID = sanitize_text_field( $_GET["refid"] );
 							$Message = wp_remote_retrieve_body( $response );
 							$Fault = $code;
                             echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
 						} else {
                             $Status = 'failed';
-				            $Transaction_ID = $_GET['refid'];
+				            $Transaction_ID = sanitize_text_field( $_GET["refid"] );
 							$Message = wp_remote_retrieve_body( $response );
                             $Fault = $code;
                             echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
@@ -698,6 +759,6 @@ if ( is_wp_error($response) ) {
 
 	}
 }
-add_action('plugins_loaded', 'Load_payping_Gateway', 0);
+add_action('plugins_loaded', 'wvpp_Load_payping_Gateway', 0);
 
 ?>

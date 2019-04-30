@@ -2,24 +2,44 @@
 if (!defined('ABSPATH'))
 	exit;
 
-function load_cvp()
+function wvpp_load_cvp()
 {
-    class Control_Vip_Payping{
+    class WVPP_Control_Vip_Payping{
         protected $person_info;
         
         function __construct(){
         }
         
-        public function call_WC_PPAL(){
+        public function call_PPing_Class($Param){
             $wc_ppal = new WC_PayPing();
+            
             $token = $wc_ppal->getToken();
-            return $token;
+            $Debug_Mode = $wc_ppal->Debug_Mode;
+            $Debug_URL = $wc_ppal->Debug_URL;
+            
+            if($Param == 'token'){
+                return $token;
+            }elseif($Param == 'debug'){
+                return $Debug_Mode;
+            }elseif($Param == 'url'){
+                return $Debug_URL;
+            }else{
+                return false;
+            } 
         }
         
 /* function add product_cat from payping to woocommerce */
-public function add_product_cat($token_access, $notif = 0){
+public function add_product_cat($token_access, $nonce_form = null, $notif = 0){
 
-$url = 'https://api.payping.ir/v1/category/List?offset=0&limit=50';
+/* Start Check Nonce */
+$nonce = $nonce_form;
+$uri = $_SERVER[ 'REQUEST_URI' ];
+if ( current_user_can('editor') || current_user_can('administrator') && check_admin_referer( 'wcpp_secure_form', $nonce ) ) {
+/* Start Check Nonce */
+    
+/* Call Function Set Urls API */
+$url = WC_GPP_DebugURLs($this->call_PPing_Class('debug'), $this->call_PPing_Class('url'), '/v1/category/All');
+    
 $cat_args = array(
 'body' => '',
 'timeout' => '45',
@@ -34,6 +54,10 @@ $cat_args = array(
 'cookies' => array()
 );
 $response = wp_remote_get( $url, $cat_args );
+
+/* Call Function Show Debug In Console */
+WC_GPP_Debug_Log($this->call_PPing_Class('debug'), $response, "Sync Categorys Result");
+
 $header = wp_remote_retrieve_headers($response);
 $request_api = $header['x-paypingrequest-id'];
 if ( is_wp_error($response) ) {
@@ -85,14 +109,25 @@ foreach( $product_cat as $category ){
     echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
 }
 }
-    
+    /* end check nonce */
+}else{
+  die('نانس نامعتبر است');
+}
+   /* end check nonce */ 
 }
         /* end function add product_cat from payping to woocommerce */
         
 /* function add products from payping to woocommerce */
-public function add_product($token_access, $notif = 0){
+public function add_product($token_access, $nonce_form = null, $notif = 0){
+/* Start Check Nonce */
+$nonce = $nonce_form;
+$uri = $_SERVER[ 'REQUEST_URI' ];
+if ( current_user_can('editor') || current_user_can('administrator') && check_admin_referer( 'wcpp_secure_form', $nonce ) ) {
+/* Start Check Nonce */
     
-$url = 'https://api.payping.ir/v1/product/ListWordpress';
+/* Call Function Set Urls API */
+$url = WC_GPP_DebugURLs($this->call_PPing_Class('debug'), $this->call_PPing_Class('url'), '/v1/product/All');
+    
 $product_args = array(
 'body' => '',
 'timeout' => '180',
@@ -107,7 +142,12 @@ $product_args = array(
 'cookies' => array()
 );
 $response = wp_remote_get( $url, $product_args );
+
+/* Call Function Show Debug In Console */
+WC_GPP_Debug_Log($this->call_PPing_Class('debug'), $response, "Sync Items Result");
+    
 $header = wp_remote_retrieve_headers($response);
+$request_api = $header['x-paypingrequest-id'];
 if ( is_wp_error($response) ) {
     echo $Message = $response->get_error_message();
 }else{
@@ -253,15 +293,26 @@ if ( $code === 200) {
     echo wp_remote_retrieve_response_message( $response );
     echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
 }
-}     
+}
+    /* end check nonce */
+}else{
+  die('نانس نامعتبر است');
+}
+   /* end check nonce */
 }
         /* end function insert and update coupon code */
         
 /* function insert and update coupon code */
-public function add_coupon($token_access, $notif = 0){
+public function add_coupon($token_access, $nonce_form = null, $notif = 0){
+
+/* Start Check Nonce */
+$nonce = $nonce_form;
+$uri = $_SERVER[ 'REQUEST_URI' ];
+if ( current_user_can('editor') || current_user_can('administrator') && check_admin_referer( 'wcpp_secure_form', $nonce ) ) {
+/* Start Check Nonce */
     
-$url = 'https://api.payping.ir/v1/coupon/ListWordpress?couponUsed=1';
-    
+/* Call Function Set Urls API */
+$url = WC_GPP_DebugURLs($this->call_PPing_Class('debug'), $this->call_PPing_Class('url'), '/v1/coupon/All?couponUsed=1');   
 $coupon_args = array(
 'body' => '',
 'timeout' => '45',
@@ -277,7 +328,12 @@ $coupon_args = array(
 );
     
 $response = wp_remote_get( $url, $coupon_args );
+    
+/* Call Function Show Debug In Console */
+WC_GPP_Debug_Log($this->call_PPing_Class('debug'), $response, "Sync Coupons Result");
+    
 $header = wp_remote_retrieve_headers($response);
+$request_api = $header['x-paypingrequest-id'];
 if ( is_wp_error($response) ) {
     echo $Message = $response->get_error_message();
 }else{
@@ -402,6 +458,12 @@ $ins_count = 0;
         echo '<br> شناسه درخواست پی‌پینگ:'.$request_api;
     }
     }
+    
+    /* end check nonce */
+}else{
+  die('نانس نامعتبر است');
+}
+   /* end check nonce */
 }
         /* end function add products from payping to woocommerce */
 
@@ -500,31 +562,33 @@ private function insert_attachment_from_url($url, $parent_post_id = null) {
     /* end class Control_Vip_Payping */
 
 function register_my_custom_submenu_page() {
-    add_submenu_page( 'woocommerce', __('پی‌پینگ تجاری', 'woocommerce'), __('Payping-VIP', 'woocommerce'), 'manage_options', 'vip-payping', 'control_page_items' ); 
+    add_submenu_page( 'woocommerce', __('پی‌پینگ تجاری', 'woocommerce'), __('Payping-VIP', 'woocommerce'), 'manage_options', 'vip-payping', 'wvpp_control_page_items' ); 
 }
 
-function control_page_items() {
-    $cvp = new Control_Vip_Payping();
-    $token = $cvp->call_WC_PPAL();
+function wvpp_control_page_items() {
+    $cvp = new WVPP_Control_Vip_Payping();
+    $token = $cvp->call_PPing_Class('token');
     
     echo '<div class="wrap">';
     echo '<h1 class="wp-heading-inline">همسان‌سازی‌ها</h1>';
     echo '<hr class="wp-header-end">';
 
     if(isset($_POST['submit_cat'])){
-        $cvp->add_product_cat($token, 1);
+        $cvp->add_product_cat($token, $_POST['st_token'], 1);
     }
     if(isset($_POST['submit_product'])){
-        $cvp->add_product($token, 1);
+        $cvp->add_product($token, $_POST['st_token'], 1);
     }
     if(isset($_POST['submit_coupons'])){
-        $cvp->add_coupon($token, 1);
+        $cvp->add_coupon($token, $_POST['st_token'], 1);
     }
     if(isset($_POST['submit_all'])){
-        $cvp->add_product_cat($token, 1);
-        $cvp->add_product($token, 1);
-        $cvp->add_coupon($token, 1);
+        $cvp->add_product_cat($token, $_POST['st_token'], 1);
+        $cvp->add_product($token, $_POST['st_token'], 1);
+        $cvp->add_coupon($token, $_POST['st_token'], 1);
     }
+    
+    $wvpp_nonce = wp_create_nonce('insertORedit');
     echo '<div id="dashboard-widgets" class="metabox-holder">'; ?>
     
     <!-- start postbox-container -->
@@ -537,6 +601,7 @@ function control_page_items() {
             <p>برای یکسان سازی تمامی دسته های فروشگاه خود با سرویس پی پینگ بر روی دکمه دسته محصولات کلیک کنید.</p>
           </div>
            <form method="post" action="">
+                <?php wp_nonce_field( 'wvpp_secure_form', 'st_token' ); ?>
                 <?php submit_button( __( 'دسته محصولات', 'woocommerce' ), 'primary', 'submit_cat', true, null ); ?>
            </form>
               </div>
@@ -554,6 +619,7 @@ function control_page_items() {
             <p>برای یکسان سازی تمامی محصولات فروشگاه خود با سرویس پی پینگ بر روی دکمه محصولات کلیک کنید <span style="color:red;">به دلیل انتقال تصاویر ممکن است چند دقیقه زمان نیاز باشد</span>.</p>
           </div>
            <form method="post" action="">
+                <?php wp_nonce_field( 'wvpp_secure_form', 'st_token' ); ?>
                 <?php submit_button( __( 'محصولات', 'woocommerce' ), 'primary', 'submit_product', true, null ); ?>
            </form>
               </div>
@@ -571,6 +637,7 @@ function control_page_items() {
             <p>برای یکسان سازی تمامی کدهای تخفیف فروشگاه خود با سرویس پی پینگ  بر روی دکمه کد تخفیف کلیک کنید.</p>
           </div>
            <form method="post" action="">
+                <?php wp_nonce_field( 'wvpp_secure_form', 'st_token' ); ?>
                 <?php submit_button( __( 'کد تخفیف', 'woocommerce' ), 'primary', 'submit_coupons', true, null ); ?>
            </form>
               </div>
@@ -588,6 +655,7 @@ function control_page_items() {
             <p>برای یکسان سازی تمامی موارد در فروشگاه خود با سرویس پی پینگ بر روی دکمه یکسان‌سازی کلی کلیک کنید <span style="color:red;">به دلیل انتقال تصاویر ممکن است چند دقیقه زمان نیاز باشد</span>.</p>
           </div>
            <form method="post" action="">
+                <?php wp_nonce_field( 'wvpp_secure_form', 'st_token' ); ?>
                 <?php submit_button( __( 'یکسان‌سازی کلی', 'woocommerce' ), 'primary', 'submit_all', true, null ); ?>
            </form>
               </div>
@@ -602,7 +670,6 @@ function control_page_items() {
 }
 add_action('admin_menu', 'register_my_custom_submenu_page',99);
 }
-add_action('plugins_loaded', 'load_cvp', 1);
-
+add_action('plugins_loaded', 'wvpp_load_cvp', 1);
 
 ?>
